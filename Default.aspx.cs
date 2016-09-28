@@ -70,39 +70,12 @@ public partial class _Default : System.Web.UI.Page
                 }
             }
         }
-        //TextBox1.Text = al.Count.ToString();
-        TextBox1.Text = get_result_from_a_website(al[8].ToString());
+
+        TextBox1.Text = get_result_from_a_website(al[11].ToString());
     }
 
 
-   /* public String get_text_from_link(String url)
-    {
-        String result = "";
-
-        var document = new HtmlWeb().Load(url);
-        string htmlText = document.DocumentNode.InnerHtml;
-
-
-        HtmlDocument doc = new HtmlDocument();
-        doc.LoadHtml(htmlText);
-
-        var nodes = doc.DocumentNode.SelectNodes("//script|//style");
-
-        foreach (var node in nodes)
-            node.ParentNode.RemoveChild(node);
-
-        string htmlOutput = doc.DocumentNode.OuterHtml;
-
-        foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//p"))
-        {
-            string x = link.InnerText;
-            if((x.Contains("#")==false)&& (x.Contains("@") == false) && (x.Contains("<") == false) && (x.Contains(">") == false))
-            result = result + link.InnerText;
-        }
-        return result;
-    }
-    */
-
+ 
     public String get_result_from_a_website(String url)
     {
         StringBuilder sb = new StringBuilder();
@@ -127,15 +100,29 @@ public partial class _Default : System.Web.UI.Page
         while (count > 0);
         string sbb = sb.ToString();
 
+        //To remove [xyz] which that website returns.
         string pattern = "\\[[^]]*\\]";
         string replacement = "";
         Regex rgx = new Regex(pattern);
         string result = rgx.Replace(sbb, replacement);
 
-        //To remove [xyz] which that website returns.
+        
 
+        //To remove extra spaces
 
+        string pattern1 = "\\s+";
+        string replacement1 = " ";
+        Regex rgx1 = new Regex(pattern1);
+        string result1 = rgx.Replace(result, replacement1);
 
-        return result;
+        result1 = result1.Replace("^", "");
+        result1 = result1.Replace("??", "");
+
+        //To remove url's
+        result1 = Regex.Replace(result1, @"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)", "");
+
+        
+       
+        return result1;
     }
 }
